@@ -1,0 +1,581 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Bold;\f2\froman\fcharset0 Times-Roman;
+\f3\froman\fcharset0 TimesNewRomanPS-BoldMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red251\green0\blue7;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b\fs28 \cf0 Docker:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0\fs24 \cf0 Docker is an open-source platform that automates the process of building, packaging, and running applications inside lightweight, portable containers, ensuring they run consistently across different environments.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b\fs28 \cf0 Docker Images:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0\fs24 \cf0 A read-only template that contains the application code, runtime, libraries, and dependencies. It is like a blueprint for creating containers.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b\fs28 \cf0 Docker Containers:
+\f2\b0\fs24 \
+A running instance of a Docker image.\
+
+\f1\b\fs28 Working with Docker CLI Commands:\
+Docker CLI Commands with redis\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 Step 1: 
+\f2\b0 Pull the redis Image\
+Command:\
+docker pull redis\
+
+\f1\b Step 2:
+\f2\b0  Run a Redis Container\
+Command:\
+docker run --name my-redis -d redis\
+What It Does:\
+\'95 Creates and starts a container named my-redis from the redis image.\
+\'95 The -d flag runs the container in the background.\
+
+\f1\b Step 3:
+\f2\b0  Check Running Containers\
+Command:\
+docker ps\
+What It Does:\
+\'95 Lists all running containers.\
+
+\f1\b Step 4:
+\f2\b0  Access Redis\
+Command:\
+docker exec -it my-redis redis-cli\
+Opens the Redis command-line tool (redis-cli) inside the container.\
+
+\f1\b Example 
+\f2\b0 Redis Commands:\
+127.0.0.1:6379> SET name "Alice"\
+OK\
+127.0.0.1:6379> GET name\
+"Alice"\
+127.0.0.1:6379>\cf3 exit \cf0 // to come out\
+
+\f1\b Step 5:
+\f2\b0  Stop the Redis Container\
+Command:\
+docker stop my-redis\
+What It Does:\
+\'95 Stops the Redis container but doesn\'92t delete it.\
+
+\f1\b Step 6:
+\f2\b0  Restart the Redis Container\
+Command:\
+docker start my-redis\
+What It Does:\
+\'95 Restarts the stopped container.\
+
+\f1\b Step 7:
+\f2\b0  Remove the Redis Container\
+Command:\
+docker rm my-redis \'a0// Note before removing stop the container\
+What It Does:\
+\'95 Deletes the container permanently.\
+
+\f1\b Step 8:
+\f2\b0  Remove the Redis Image\
+Command:\
+docker rmi redis\
+What It Does:\
+\'95 Deletes the Redis image from your local system.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b\fs28 \cf0 2.Working with Docker file\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0\fs24 \cf0 A Dockerfile is a text file with instructions to create a custom Docker image.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 Step 1:
+\f2\b0  Set Up Your Folder\
+1. Windows:\
+o Create a folder like C:\\DockerProjects\\Redis.\
+o Open Git Bash and navigate to the folder:\
+cd /c/DockerProjects/Redis\
+2. Mac/Linux:\
+o Create a folder:\
+mkdir ~/DockerProjects/Redis\
+cd ~/DockerProjects/Redis\
+
+\f1\b Step 2:
+\f2\b0  Write the Dockerfile\
+1. Inside the folder, create a file named Dockerfile (no extension).\
+2. Add the following content:\
+
+\f1\b FROM redis:latest\
+CMD ["redis-server"]\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 Docker Commands (Step-by-step):\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 1. docker build -t redisnew 
+\f2\b0\fs32 .\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 What it does:\
+\'95 This creates (builds) a Docker image using the recipe (Dockerfile) in the current\
+folder (.).\
+\'95 -t redisnew: Gives the image a name/tag ("redisnew"), so you can find it easily.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 2. docker run --name myredisnew -d redisnew\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Starts a new container (mini computer) from the redisnew image.\
+\'95 --name myredisnew: Names the container "myredisnew" so it\'92s easy to identify.\
+\'95 -d: Runs the container in the background.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 3. docker ps\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Shows a list of containers that are running right now.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 4. docker stop myredisnew\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Stops the container named "myredisnew" (like turning off a computer).\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 5. docker login\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Logs you into your Docker Hub account, so you can upload images.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 6. docker ps -a\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Shows a list of all containers, including stopped ones.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 7. docker commit 0e993d2009a1 budarajumadhurika/redis1\
+// Note 0e993d2009a1 is container id of myredisnew\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Takes a snapshot (saves changes) of the container with ID 0e993d2009a1 and creates a\
+new image called budarajumadhurika/redis1.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 8. docker images\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Lists all images saved on your system. // will show image of budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 9. docker push budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Uploads the image budarajumadhurika/redis1 to Docker Hub, so others can download\
+it.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 10. docker rm 0e993d2009a1 \'a0// container id of myredisnew\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Deletes the container with ID 0e993d2009a1 
+\f1\b of myredisnew
+\f2\b0 .\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 11. docker rmi budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Deletes the image budarajumadhurika/redis1 from your system.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 12. docker ps -a\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+Shows all containers again to confirm changes.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 13. docker logout\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Logs you out of Docker Hub.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 14. docker pull budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Downloads the image budarajumadhurika/redis1 from Docker Hub.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 15. docker run --name myredis -d budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Starts a new container using the image budarajumadhurika/redis1.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 16. docker exec -it myredis redis-cli\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Opens the Redis command-line interface (like a terminal) inside the running container\
+myredis.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 17. SET name "Abcdef"\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Saves a key-value pair in Redis (key = name, value = Abcdef).\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 18. GET name\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Retrieves the value of the key name from Redis (it will return "Abcdef").\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 19. exit\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Exits the Redis CLI.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 20. docker ps -a\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Shows all containers again to check their status.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 21. docker stop myredis\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Stops the container myredis.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 22. docker rm 50a6e4a9c326\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Deletes the container with ID 50a6e4a9c326.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 23. docker images\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Lists all images again to confirm which ones remain.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 24. docker rmi budarajumadhurika/redis1\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 What it does:\
+\'95 Deletes the image budarajumadhurika/redis1 again.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f1\b \cf0 Step 3: Remove Login Credentials (Optional)\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f2\b0 \cf0 If you no longer need to be logged in, you can log out:\
+docker logout\
+What It Does:\
+\'95 Logs you out from Docker Hub and removes your stored credentials.\
+\
+\pard\pardeftab720\sa100\partightenfactor0
+
+\f0\fs28 \cf0 To run a multi-container setup like the one above:\
+\pard\pardeftab720\partightenfactor0
+
+\f3\b \cf0 1. Save the file as docker-compose.yml.\
+\pard\pardeftab720\li720\fi-720\sa100\partightenfactor0
+
+\f0\b0 \cf0 \'a0 \'a0 \'a0 \'a0 \'a0 \'a0 \'a0 \'a0Or\
+docker-compose.yaml\
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs24 \cf0 2. To Start the compose\
+\pard\pardeftab720\li720\fi-720\sa100\partightenfactor0
+
+\f0\b0 \cf0 \'a0\
+docker-compose up \'96d\
+\'a0\
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs28 \cf0 3. To stop the containers\
+\pard\pardeftab720\sa100\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0 \'a0 \'a0 docker-compose down\
+\pard\pardeftab720\partightenfactor0
+
+\f3\b \cf0 4. To scale the container\
+\pard\pardeftab720\li720\fi-720\sa100\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\li720\fi-720\sa100\partightenfactor0
+
+\f0\b0 \cf0 docker-compose up --scale <service name>=2 -d\
+\pard\pardeftab720\li720\fi-720\sa160\qj\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 1.Define and run multiple interdependent services\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b \cf0 Task:\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf0 I. Create a new folder compose-lab\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 Inside it, create a file docker-compose.yml with the following content:\
+\'a0\
+version: "3.9"\
+services:\
+\'a0web:\
+\'a0 \'a0image: nginx:latest\
+\'a0 \'a0ports:\
+\'a0 \'a0 \'a0- "8080:80"\
+\'a0\
+\'a0db:\
+\'a0 \'a0image: postgres:15\
+\'a0 \'a0environment:\
+\'a0 \'a0 \'a0POSTGRES_USER: demo\
+\'a0 \'a0 \'a0POSTGRES_PASSWORD: demo\
+\'a0 \'a0 \'a0POSTGRES_DB: demo_db\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 II. Run the setup:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+docker compose up -d\
+\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b \cf0 Task:\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf0 I. Modify docker-compose.yml to add a Redis cache:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+\'a0redis:\
+\'a0 \'a0image: redis:alpine\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 II. Add a depends_on so web waits for Redis:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0web:\
+\'a0 \'a0image: nginx:latest\
+\'a0 \'a0ports:\
+\'a0 \'a0 \'a0- "8080:80"\
+\'a0 \'a0depends_on:\
+\'a0 \'a0 \'a0- redis\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 III. Restart the setup:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 docker compose up -d\
+docker compose ps\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 IV. Expected Output:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+Three services (web, db, redis) are listed as running.\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 3.Deploy across different machines\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 Task:\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf0 I. Zip your compose-lab folder.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+Transfer it to another machine with Docker Compose installed.\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 II. Run:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 docker compose up -d\
+\'a0\
+Check that Nginx and Postgres work there as well.\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 III. Expected Output:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 The same services run on the new machine without changes.\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 4.Networking and persistent storage\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 Task:\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf0 I. Update your docker-compose.yml to add a custom network and volume:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+networks:\
+\'a0app-net:\
+\'a0\
+volumes:\
+\'a0db-data:\
+\'a0\
+services:\
+\'a0web:\
+\'a0 \'a0image: nginx:latest\
+\'a0 \'a0ports:\
+\'a0 \'a0 \'a0- "8080:80"\
+\'a0 \'a0networks:\
+\'a0 \'a0 \'a0- app-net\
+\'a0 \'a0depends_on:\
+\'a0 \'a0 \'a0- db\
+\'a0\
+\'a0db:\
+\'a0 \'a0image: postgres:15\
+\'a0 \'a0environment:\
+\'a0 \'a0 \'a0POSTGRES_USER: demo\
+\'a0 \'a0 \'a0POSTGRES_PASSWORD: demo\
+\'a0 \'a0 \'a0POSTGRES_DB: demo_db\
+\'a0 \'a0volumes:\
+\'a0 \'a0 \'a0- db-data:/var/lib/postgresql/data\
+\'a0 \'a0networks:\
+\'a0 \'a0 \'a0- app-net\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 II. Run:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 docker compose up -d\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 III. Insert some data into Postgres (optional with psql).\
+IV. Remove containers:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 docker compose down\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 V. Start again:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 docker compose up -d\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 VI. Expected Output:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 Database data persists across restarts.\
+Services communicate via the app-net network using service names.\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 5.Faster iteration during development\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 Task:\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf0 I. Create a simple Flask app in app.py:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+from flask import Flask\
+app = Flask(__name__)\
+@app.route("/")\
+def home():\
+\'a0 \'a0return "Hello from Flask + Docker!"\
+if __name__ == "__main__":\
+\'a0 \'a0app.run(host="0.0.0.0", port=5000)\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 II. Add a Dockerfile in the same folder:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0\
+FROM python:3.10-slim\
+WORKDIR /app\
+COPY app.py /app/\
+RUN pip install flask\
+CMD ["python", "app.py"]\
+\'a0\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 III. Update docker-compose.yml:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0\fs24 \cf0 \'a0web:\
+\'a0 \'a0build: .\
+\'a0 \'a0ports:\
+\'a0 \'a0 \'a0- "5000:5000"\
+\'a0 \'a0depends_on:\
+\'a0 \'a0 \'a0- db\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 IV. Run:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0 \cf0 docker compose up --build\
+Visit http://localhost:5000.\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\fs24 \cf0 Change the return text in app.py (e.g., "Hello Docker Compose!").\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f3\b\fs28 \cf0 V. Rebuild:\
+\pard\pardeftab720\sa160\partightenfactor0
+
+\f0\b0 \cf0 docker compose up \'96build \'a0// No need to rebuild\
+Visit http://localhost:5000.\
+\'a0}
