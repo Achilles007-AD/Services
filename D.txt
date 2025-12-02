@@ -304,4 +304,65 @@ Change the return text in app.py (e.g., "Hello Docker Compose!").
 V. Rebuild:
 docker compose up –build  // No need to rebuild
 Visit http://localhost:5000.
+
+
+Create Multi Container of mysql and wordpress through Docker
+
+docker --version
+docker compose version
+
+mkdir wordpress-mysql
+cd wordpress-mysql
+
+---------------------------------------------------------------------------------
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wp-network
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wp-site
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+      WORDPRESS_DB_NAME: wordpress
+    ports:
+      - "8080:80"
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - wp-network
+
+volumes:
+  mysql_data:
+  wp_data:
+
+networks:
+  wp-network:
+
+---------------------------------------------------------------
+
+docker compose up -d
+
+docker compose down
+
+docker compose down -v
+
  
