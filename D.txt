@@ -1,13 +1,4 @@
- 
-Docker:
-Docker is an open-source platform that automates the process of building, packaging, and running applications inside lightweight, portable containers, ensuring they run consistently across different environments.
-Docker Images:
-A read-only template that contains the application code, runtime, libraries, and dependencies. It is like a blueprint for creating containers.
-Docker Containers:
-A running instance of a Docker image.
-Working with Docker CLI Commands:
-Docker CLI Commands with redis
-Step 1: Pull the redis Image
+ Step 1: Pull the redis Image
 Command:
 docker pull redis
 Step 2: Run a Redis Container
@@ -365,4 +356,75 @@ docker compose down
 
 docker compose down -v
 
- 
+
+
+Create a Docker Compose setup with a Node.js app and MongoDB.
+
+mkdir node-mongo-app
+cd node-mongo-app
+
+
+npm init -y
+
+npm install express mongoose
+
+nano server.js
+server.js:
+------------------------
+const express = require("express");
+const mongoose = require("mongoose");
+const app = express();
+
+mongoose.connect("mongodb://mongo:27017/mydb")
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
+
+app.get("/", (req, res) => {
+    res.send("Node.js App connected with MongoDB using Docker Compose!");
+});
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
+------------------------------------------------------
+
+nano Dockerfile
+Dockerfile:
+----------------------------------------------
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
+----------------------------------------
+
+nano docker-compose.yml
+docker-compose.yml:
+-------------------------------------------
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: node-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+__________________________________________________
+
+docker-compose up -d
+
+
