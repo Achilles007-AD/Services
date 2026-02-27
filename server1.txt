@@ -191,6 +191,16 @@ o Username: admin
 o Password: password
  Click Create / Reset Database
 
+sudo apt update
+sudo apt install docker.io -y
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+sudo docker pull vulnerables/web-dvwa
+sudo docker run --rm -it -p 9090:80 vulnerables/web-dvwa
+
+
 Step 5: Set Security Level
  Go to DVWA Security
  Set Security Level = Low
