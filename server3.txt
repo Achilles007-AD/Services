@@ -1,0 +1,193 @@
+1) VPC
+2) EFS
+3) VPC USING BASTION SERVER
+
+
+🔹 Step 1: Create the VPC
+1. Go to AWS Management Console → VPC
+2. Click Create VPC
+3. Choose VPC only
+4. Enter:
+o Name: Custom-VPC
+o IPv4 CIDR block: e.g. 10.0.0.0/16
+5. Click Create VPC
+
+🔹 Step 2: Create Subnets (Public & Private)
+Create subnets in same Availability Zones for high availability.
+Example:
+ Public Subnet: 10.0.1.0/24 (AZ-A)
+ Private Subnet: 10.0.2.0/24 (AZ-A)
+Steps:
+1. Go to Subnets → Create subnet
+2. Select your VPC
+3. Choose AZ
+4. Enter CIDR
+5. Create subnet
+
+🔹 Step 3: Create an Internet Gateway (IGW)
+1. Go to Internet Gateways
+2. Click Create internet gateway
+3. Name it Custom-IGW
+4. Attach it to your VPC
+
+🔹 Step 4: Create Route Tables
+You need separate route tables for public and private subnets.
+Public Route Table
+1. Go to Route Tables → Create route table
+2. Select VPC
+3. Add route:
+o Destination: 0.0.0.0/0
+o Target: Internet Gateway
+4. Associate with public subnet
+Private Route Table
+ Keep default local route only (no IGW)
+ Associate with private subnet
+
+🔹 Step 5: Enable Auto-Assign Public IP (Public Subnet)
+1. Select Public Subnet
+2. Go to Edit subnet settings
+3. Enable Auto-assign public IPv4 address
+
+🔹 Step 6: Configure Security Groups
+1. Create a Security Group
+2. Add inbound rules:
+o HTTP (80) / HTTPS (443)
+o SSH (22) from trusted IP
+3. Attach to EC2 instances
+
+🔹 Step 7: Launch EC2 Instances
+ Public EC2 → Public subnet
+ Private EC2 → Private subnet
+Attach correct security groups.
+
+🔹 Step 8: Test the Setup
+ Public EC2 → Internet access ✔
+ Private EC2 → Internet via NAT ✔
+ Private EC2 → No direct inbound access ✔
+
+
+Step 1: Launching EC2 Instances
+1. Sign in to AWS Management Console.
+2. Go to the EC2 dashboard.
+3. Click on "Launch Instance".
+4. Configure instance details:
+- Instance Name: EFS-1
+5. Choose an Amazon Machine Image (AMI) for Linux.
+6. Select instance type: t2.micro.
+- Key Pair: EFS
+- Network: Choose Subnet-1a
+- Security Group: Create a new security group (SG) and add NFS and allow from anywhere.
+7. Launch the instance.
+8. Repeat the above steps to launch another instance named EFS-2 in Subnet-1b with the same
+configuration.
+
+Step 2: Creating an EFS File System
+1. Go to the EFS service in the AWS Management Console.
+2. Click on "Create file system".
+3. Specify details:
+- Name: Optional
+- VPC: Default
+- Enable region button.
+Click on "Next".
+4. In the Network settings:
+- Delete all security groups.
+- Select the newly created security group (NFS).---which is created while creating instance
+Click on "Next" and review the configuration.
+Click on "Create file system".
+
+Step 3: Accessing the two EC2 instances named EFS-1 & EFS -2 in two different PowerShell
+sessions and performing the specified tasks:
+Accessing EFS-1 Instances in Two Different PowerShell Sessions:
+1. Open Two PowerShell Sessions:
+- Open two separate PowerShell windows or tabs on your local machine.
+For each Instance:
+2. SSH into the Instance:
+- Use the SSH command to connect to the EFS-1 instance
+    ssh -i [path-to-your-keypair.pem] ec2-user@[instance-public-ip]
+3. Switch to Root User:
+- Gain root access by executing the following command:
+    sudo su
+4. Create a Directory:
+- Make a directory named "efs" using the following command:
+    mkdir efs
+5. Install Amazon EFS Utilities:
+- Use yum package manager to install the Amazon EFS utilities:
+    yum install -y amazon-efs-utils
+6. List Files:
+- Execute the following command to list files in the current directory:
+    ls
+7. Verify Installation (Optional):
+- Optionally, you can verify the installation of the Amazon EFS utilities by checking the version:
+    efs-utils --version
+Repeat Steps 2-7 for ------------------------- EFS-2 Instance.
+
+Step 4: Attaching EFS to EC2 Instances
+1. Go to the EFS service in the AWS Management Console.
+2. Click on the target EFS file system.
+3. Click on the "Attach" button.
+4. Choose "Mount via DNS" option.
+5. Copy the displayed command. ,on both ec2 instances(powershell)
+6. Paste and execute the copied command in the terminal to mount the EFS file system onto the instance.
+
+Step 5: Verify and Test EFS
+1. Change the directory to EFS on both instances.
+2. Create a file on one instance.
+3. Verify that the file automatically synchronizes and appears on the other instance
+
+
+VPC USING BASTION SERVER
+1. VPC with Bastion Server
+    VPC & Subnet Design
+    VPC CIDR: 10.0.0.0/16
+    Public Subnet (Bastion Server): 10.0.1.0/24
+    Private Subnet (Database Server): 10.0.2.0/24
+
+2. Security Group Configuration (VERY IMPORTANT)
+    Bastion Server Security Group (Public Subnet)
+    Allows SSH (22) from: My IP (Database Administrator)
+    Database Server Security Group (Private Subnet)
+    Allows MySQL / Aurora (3306) from: custom 10.0.1.0/24 (Public subnet / Bastion subnet)
+    Allows SSH (22) from: custom Private IP of Bastion Server
+    Does NOT allow public access
+
+3. Security Outcome
+    Database server is NOT publicly accessible
+    Only Bastion server can connect to DB server using SSH
+    External users cannot access DB directly
+
+4. EC2 Instance Creation
+    Bastion Server
+    Subnet: Public Subnet (10.0.1.0/24)
+    Key pair: bastion.pem
+    Operating System: Ubuntu
+    Database Server
+    Subnet: Private Subnet (10.0.2.0/24)
+    Key pair: dbserver.pem
+    Operating System: Ubuntu
+
+5. Copy DB Server Key to Bastion Server
+    Database server is in private subnet
+    Direct SSH from local system is NOT possible
+    DB server key must be copied to Bastion server
+    Command (PowerShell):
+    scp -i bastion.pem dbserver.pem ubuntu@<BASTION_PUBLIC_IP>:/home/ubuntu/
+    File is copied securely using SCP
+    dbserver.pem will now be available inside Bastion server
+
+6. Connect to Bastion Server
+    SSH Command:
+    ssh -i bastion.pem ubuntu@<BASTION_PUBLIC_IP>
+    Verify key files:
+    ls
+    Output:
+    bastion.pem
+    dbserver.pem
+
+7. Connect from Bastion to Database Server
+    SSH from Bastion:
+    ssh -i dbserver.pem ubuntu@10.0.2.x
+    Connection to DB server is successful
+    Database administrator can now:
+    Update database configurations
+    Install required packages-------problem occurs
+    Restart MySQL service
