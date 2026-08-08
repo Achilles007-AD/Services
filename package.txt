@@ -235,6 +235,12 @@ public class NewTest {
 
 5: Database Checkpoint – Default Check (Record Exists)
 
+<dependency>
+<groupId>com.h2database</groupId>
+<artifactId>h2</artifactId>
+<version>2.4.240</version>
+</dependency>
+
 package com.test.selenium;
 
 import java.sql.Connection;
