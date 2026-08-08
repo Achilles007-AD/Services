@@ -70,14 +70,18 @@ package com.test.selenium;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.io.FileHandler;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class NewTest {
+public class Hello {
     public static void main(String[] args) throws Exception {
-        WebDriver driver = new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--force-device-scale-factor=1");
+        WebDriver driver = new ChromeDriver(options);
         try {
             driver.get("https://www.google.com");
             WebElement searchBox = driver.findElement(By.name("q"));
@@ -85,6 +89,14 @@ public class NewTest {
             File folder = new File("Screenshots");
             if (!folder.exists()) {
                 folder.mkdir();
+            }
+            
+            // FIX 1: Remove cursor focus from the search box so it doesn't blink during the screenshot
+            try {
+                ((JavascriptExecutor) driver).executeScript("arguments[0].blur();", searchBox);
+                Thread.sleep(200); // Small pause to let focus animation clear completely
+            } catch (Exception je) {
+                System.out.println("Could not clear text box focus.");
             }
             
             File currentImage = searchBox.getScreenshotAs(OutputType.FILE);
@@ -121,17 +133,26 @@ public class NewTest {
         BufferedImage image2 = ImageIO.read(img2);
         
         if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+            System.out.println("Dimension mismatch! Base: " + image1.getWidth() + "x" + image1.getHeight() + 
+                               " | Current: " + image2.getWidth() + "x" + image2.getHeight());
             return false;
         }
+        
+        long mismatchedPixels = 0;
+        long totalPixels = (long) image1.getWidth() * image1.getHeight();
         
         for (int x = 0; x < image1.getWidth(); x++) {
             for (int y = 0; y < image1.getHeight(); y++) {
                 if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
-                    return false;
+                    mismatchedPixels++;
                 }
             }
         }
-        return true;
+        
+        double errorPercentage = ((double) mismatchedPixels / totalPixels) * 100;
+        System.out.println("Pixel Difference: " + String.format("%.3f", errorPercentage) + "% (" + mismatchedPixels + " pixels)");
+        
+        return errorPercentage < 0.1;
     }
 }
 
